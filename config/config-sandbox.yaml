@@ -1,0 +1,10 @@
+admin:
+  # For GRPC endpoints you might want to use dns:///flyte.myexample.com
+  endpoint: dns:///localhost:30080
+  insecure: true
+
+storage:
+  connection:
+    endpoint: http://localhost:30002/
+    access-key: minio
+    secret-key: miniostorage
