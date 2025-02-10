@@ -12,11 +12,11 @@ shell_task = SlurmShellTask(
 echo "Run a Flyte SlurmShellTask...\n"
 
 # Run a demo python script on Slurm
-. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-poetry-RLi6T71_-py3.12/bin/activate;
-python3 /home/ubuntu/abao/tools/hello_task.py
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate
+python3 /home/ubuntu/test/hello_python.py
 """,
     task_config=Slurm(
-        slurm_host="aws",
+        slurm_host="aws2",
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",

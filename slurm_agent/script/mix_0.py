@@ -7,8 +7,8 @@ from flytekitplugins.slurm import Slurm, SlurmTask, SlurmRemoteScript, SlurmShel
 echo_job = SlurmTask(
     name="test-slurm",
     task_config=SlurmRemoteScript(
-        slurm_host="aws",
-        batch_script_path="/home/ubuntu/test_slurm_job.sh",
+        slurm_host="aws2",
+        batch_script_path="/home/ubuntu/test/echo.sh",
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
@@ -26,7 +26,7 @@ echo "Run a Flyte SlurmShellTask...\n"
 # python3 <path_to_python_script>
 """,
     task_config=Slurm(
-        slurm_host="aws",
+        slurm_host="aws2",
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",

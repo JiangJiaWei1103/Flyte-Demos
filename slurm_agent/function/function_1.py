@@ -6,7 +6,7 @@ from flytekitplugins.slurm import SlurmFunction
 
 @task(
     task_config=SlurmFunction(
-        slurm_host="aws",
+        slurm_host="aws2",
         srun_conf={
             "partition": "debug",
             "job-name": "fn-task",
@@ -22,7 +22,7 @@ echo "Hello, world!"
 export MY_ENV_VAR=123
 
 # Activate virtual env
-. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-poetry-RLi6T71_-py3.12/bin/activate
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate
 
 # == Execute Flyte Task Function ==
 {task.fn}

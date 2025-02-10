@@ -6,11 +6,20 @@ from flytekitplugins.slurm import SlurmFunction
 
 @task(
     task_config=SlurmFunction(
-        slurm_host="aws",
+        slurm_host="aws2",
         srun_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
-        }
+            "output": "/home/ubuntu/fn_task.log"
+        },
+        script="""#!/bin/bash
+
+# Source the virtual env
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
+
+# Run the user-defined task function
+{task.fn}
+"""
     )
 )
 def plus_one(x: int) -> int: 

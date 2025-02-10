@@ -6,10 +6,10 @@ from flytekitplugins.slurm import SlurmRemoteScript, SlurmTask
 
 
 echo_task = SlurmTask(
-    name="check-basic",
+    name="test-basic",
     task_config=SlurmRemoteScript(
-        slurm_host="aws",
-        batch_script_path="/home/ubuntu/abao/tools/echo.sh",
+        slurm_host="aws2",
+        batch_script_path="/home/ubuntu/test/echo.sh",
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
