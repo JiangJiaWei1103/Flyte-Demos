@@ -22,6 +22,10 @@ To avoid unintended deletions, a confirmation step may be required.
 ### Error Handling
 
 
+## Todos
+* [ ] Experiment with deleting a single execution at a time
+
+
 ## References
 * [User guide/Nodes](https://docs.flyte.org/en/latest/user_guide/concepts/main_concepts/nodes.html#divedeep-nodes)
 * [Flyte Weekly Meeting 2025-01-24 part1](https://youtu.be/FMxkTGiaV7A?t=629)
