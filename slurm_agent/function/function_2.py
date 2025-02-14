@@ -15,13 +15,13 @@ from flytekitplugins.slurm import SlurmFunction
         script="""#!/bin/bash
 
 # == Pre-Execution ==
-echo "Hello, world!"
+echo "Let's make this task fail..."
 
 # Setup env vars
 export MY_ENV_VAR=123
 
 # Activate virtual env
-. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
 
 # == Execute Flyte Task Function ==
 {task.fn}
@@ -31,9 +31,9 @@ echo "Success!!"
 """
     )
 )
-def plus_one(x: int) -> int: 
+def divide_zero(x: int) -> float: 
     print(os.getenv("MY_ENV_VAR"))
-    return x + 1
+    return x / 0
 
 
 @task
@@ -43,7 +43,7 @@ def greet(year: int) -> str:
 
 @workflow
 def wf(x: int) -> str:
-    x = plus_one(x=x)
+    x = divide_zero(x=x)
     msg = greet(year=x)
     return msg
 

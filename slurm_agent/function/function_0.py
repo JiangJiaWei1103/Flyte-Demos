@@ -7,12 +7,15 @@ from flytekitplugins.slurm import SlurmFunction
 @task(
     task_config=SlurmFunction(
         slurm_host="aws2",
-        srun_conf={
+        sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
             "output": "/home/ubuntu/fn_task.log"
         },
         script="""#!/bin/bash
+
+echo Run function with sbatch...
+# sleep 20
 
 # Source the virtual env
 . /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
