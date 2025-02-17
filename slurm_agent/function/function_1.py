@@ -6,7 +6,11 @@ from flytekitplugins.slurm import SlurmFunction
 
 @task(
     task_config=SlurmFunction(
-        slurm_host="aws2",
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+            # "client_keys": ["~/.ssh/slurm_reprod.pem"],
+        },
         sbatch_conf={
             "partition": "debug",
             "job-name": "fn-task",

@@ -7,7 +7,11 @@ from flytekitplugins.slurm import Slurm, SlurmTask, SlurmRemoteScript, SlurmShel
 echo_job = SlurmTask(
     name="test-slurm",
     task_config=SlurmRemoteScript(
-        slurm_host="aws2",
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+            # "client_keys": ["~/.ssh/slurm_reprod.pem"],
+        },
         batch_script_path="/home/ubuntu/test/echo.sh",
         sbatch_conf={
             "partition": "debug",
@@ -19,14 +23,15 @@ echo_job = SlurmTask(
 shell_task = SlurmShellTask(
     name="test-shell",
     script="""#!/bin/bash
-# We can define sbatch options here, but using sbatch_conf can be more neat
+
 echo "Run a Flyte SlurmShellTask...\n"
-# Run a python script on Slurm
-# Activate the virtual env first if any
-# python3 <path_to_python_script>
 """,
     task_config=Slurm(
-        slurm_host="aws2",
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+            # "client_keys": ["~/.ssh/slurm_reprod.pem"],
+        },
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",

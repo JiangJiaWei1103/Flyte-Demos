@@ -8,7 +8,11 @@ from flytekitplugins.slurm import SlurmRemoteScript, SlurmTask
 echo_task = SlurmTask(
     name="test-basic",
     task_config=SlurmRemoteScript(
-        slurm_host="aws2",
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+            # "client_keys": ["~/.ssh/slurm_reprod.pem"],
+        },
         batch_script_path="/home/ubuntu/test/echo.sh",
         sbatch_conf={
             "partition": "debug",
