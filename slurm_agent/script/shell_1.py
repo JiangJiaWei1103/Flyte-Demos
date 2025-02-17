@@ -4,9 +4,6 @@ from flytekit import workflow
 from flytekitplugins.slurm import Slurm, SlurmShellTask
 
 
-# if -i
-# bash: no job control in this shell
-
 shell_task = SlurmShellTask(
     name="test-shell",
     script="""#!/bin/bash
@@ -18,7 +15,11 @@ echo "Let's make this task fail...\n"
 python3 /home/ubuntu/test/raise_err.py
 """,
     task_config=Slurm(
-        slurm_host="aws2",
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+            "client_keys": ["~/.ssh/slurm_reprod.pem"],
+        },
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
