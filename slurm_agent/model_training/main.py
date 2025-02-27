@@ -5,6 +5,7 @@ A beautiful MNIST model training example using the Slurm agent.
 """
 import os
 from pathlib import Path
+from tqdm import tqdm
 from typing import Dict, Optional
 
 import torch
@@ -121,13 +122,34 @@ def train(
 
 
 @task
-def run_infer(model_path: FlyteFile) -> Dict[str, float]:
+@torch.no_grad()
+def run_infer(data_path: str, model_path: FlyteFile) -> Dict[str, float]:
+    # Build validation dataloader
+    _, val_ds = get_dataset(download_path=data_path)
+    val_loader = DataLoader(val_ds, batch_size=2048, shuffle=False)
+
     # Load model
     model = Model()
     model.load_state_dict(torch.load(model_path.download()))
 
-    # Run inference
-    prf_report = {}
+    y_true, y_pred = [], []
+    model.eval()
+    for i, batch_data in tqdm(enumerate(val_loader), total=len(val_loader)):
+        # Retrieve batched raw data
+        x, y = batch_data
+        inputs = {"x": x}
+
+        # Forward pass
+        logits = model(inputs)
+
+        # Record batched output
+        y_true.append(y.detach())
+        y_pred.append(logits.detach())
+
+    # Derive accuracy
+    y_true = torch.cat(y_true, dim=0)
+    y_pred = torch.cat(y_pred, dim=0).argmax(dim=1)
+    prf_report = {"acc": ((y_true == y_pred).sum() / len(y_true)).item()}
 
     return prf_report
 
@@ -136,11 +158,11 @@ def run_infer(model_path: FlyteFile) -> Dict[str, float]:
 def dl_wf(
     raw_data_path: str,
     epochs: int = 1,
-    debug: bool = False
+    debug: bool = True,
 ) -> Dict[str, float]:
     proc_data_path = process_data(raw_data_path=raw_data_path)
     output_path = train(data_path=proc_data_path, epochs=epochs, debug=debug)
-    prf_report = run_infer(model_path=output_path)
+    prf_report = run_infer(data_path=proc_data_path, model_path=output_path)
 
     return prf_report
 
