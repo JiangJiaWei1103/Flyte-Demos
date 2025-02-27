@@ -12,13 +12,24 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from flytekit import task, workflow
+from flytekit import task, workflow, ImageSpec
 from flytekit.types.file import FlyteFile
 from flytekitplugins.slurm import SlurmFunction
 
 from dataset import get_dataset
 from model import Model
 from trainer import train_epoch, eval_epoch
+
+
+flytekit_hash = "master"
+flytekit = f"git+https://github.com/flyteorg/flytekit.git@{flytekit_hash}"
+slurm_agent = f"git+https://github.com/flyteorg/flytekit.git@{flytekit_hash}#subdirectory=plugins/flytekit-slurm"
+
+image = ImageSpec(
+    packages=[flytekit, slurm_agent, "torch", "torchvision"],
+    apt_packages=["git"],
+    registry="localhost:30000"
+)
 
 
 @task(
@@ -121,7 +132,7 @@ def train(
     return FlyteFile(path=model_path)
 
 
-@task
+@task(image=image)
 @torch.no_grad()
 def run_infer(data_path: str, model_path: FlyteFile) -> Dict[str, float]:
     # Build validation dataloader
