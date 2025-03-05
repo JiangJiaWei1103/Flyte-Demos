@@ -1,7 +1,3 @@
-"""
-Echo a message on the Slurm cluster.
-"""
-
 import os
 
 from flytekit import workflow
@@ -12,7 +8,7 @@ shell_task = SlurmShellTask(
     name="test-shell",
     script="""#!/bin/bash 
 
-echo "Run a Flyte SlurmShellTask with the new interface...\n"
+echo "Run a Flyte SlurmShellTask...\n"
 """,
     task_config=Slurm(
         ssh_config={
@@ -24,7 +20,12 @@ echo "Run a Flyte SlurmShellTask with the new interface...\n"
             "partition": "debug",
             "job-name": "tiny-slurm",
         }
-    )
+    ),
+    # ===
+    # No need to do this, we fix this in 
+    # https://github.com/flyteorg/flytekit/pull/3159/commits/f10b63283da5fad9de5e1369b1700d459c189ef9
+    # inputs={}
+    # ===
 )
 
 

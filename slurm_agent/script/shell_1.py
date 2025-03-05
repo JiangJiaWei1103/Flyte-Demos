@@ -1,18 +1,23 @@
+"""
+Echo a message on the Slurm cluster.
+"""
+
 import os
 
-from flytekit import workflow
+from flytekit import kwtypes, workflow
 from flytekitplugins.slurm import Slurm, SlurmShellTask
 
 
 shell_task = SlurmShellTask(
     name="test-shell",
-    script="""#!/bin/bash
+    script="""#!/bin/bash 
 
-echo "Let's make this task fail...\n"
-
-# Run a demo python script on Slurm
-. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
-python3 /home/ubuntu/test/raise_err.py
+echo "Write an integer to a text file..."
+echo "Integer: {inputs.x}" >> ~/test_write.txt
+echo "Write an str to a text file..."
+echo "String: {inputs.y}" >> ~/test_write.txt
+echo "Write an float to a text file..."
+echo "Float: {inputs.z}" >> ~/test_write.txt
 """,
     task_config=Slurm(
         ssh_config={
@@ -25,12 +30,13 @@ python3 /home/ubuntu/test/raise_err.py
             "job-name": "tiny-slurm",
         }
     ),
+    inputs=kwtypes(x=int, y=str, z=float)
 )
 
 
 @workflow
-def wf() -> None:
-    shell_task()
+def wf(x: int, y: str, z: float) -> None:
+    shell_task(x=x, y=y, z=z)
 
 
 
@@ -42,5 +48,5 @@ if __name__ == "__main__":
     path = os.path.realpath(__file__)
 
     print(f">>> LOCAL EXEC <<<")
-    result = runner.invoke(pyflyte.main, ["run", path, "wf"])
+    result = runner.invoke(pyflyte.main, ["run", path, "wf", "--x", 1, "--y", "2", "--z", 9.9])
     print(result.output)

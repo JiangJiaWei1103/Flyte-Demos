@@ -1,7 +1,3 @@
-"""
-Echo a message on the Slurm cluster.
-"""
-
 import os
 
 from flytekit import workflow
@@ -10,9 +6,13 @@ from flytekitplugins.slurm import Slurm, SlurmShellTask
 
 shell_task = SlurmShellTask(
     name="test-shell",
-    script="""#!/bin/bash 
+    script="""#!/bin/bash
 
-echo "Run a Flyte SlurmShellTask with the new interface...\n"
+echo "Let's make this task fail...\n"
+
+# Run a demo python script on Slurm
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
+python3 /home/ubuntu/test/raise_err.py
 """,
     task_config=Slurm(
         ssh_config={
@@ -24,7 +24,7 @@ echo "Run a Flyte SlurmShellTask with the new interface...\n"
             "partition": "debug",
             "job-name": "tiny-slurm",
         }
-    )
+    ),
 )
 
 

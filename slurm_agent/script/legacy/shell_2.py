@@ -1,37 +1,35 @@
-"""
-Echo a message on the Slurm cluster.
-"""
-
 import os
 
-from flytekit import workflow
+from flytekit import kwtypes, workflow
 from flytekitplugins.slurm import Slurm, SlurmShellTask
 
 
-shell_task = SlurmShellTask(
-    name="test-shell",
-    script="""#!/bin/bash 
+write_file_task = SlurmShellTask(
+    name="write-file",
+    script="""#!/bin/bash
 
-echo "Run a Flyte SlurmShellTask with the new interface...\n"
+echo "Write an integer..."
+echo "Input integer: {inputs.x}" >> ~/write_num.txt
+echo "Write a float..."
+echo "Input float: {inputs.y}" >> ~/write_num.txt
 """,
     task_config=Slurm(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",
-            "client_keys": ["~/.ssh/slurm_reprod.pem"],
         },
         sbatch_conf={
             "partition": "debug",
             "job-name": "tiny-slurm",
         }
-    )
+    ),
+    inputs=kwtypes(x=int, y=float),
 )
 
 
 @workflow
 def wf() -> None:
-    shell_task()
-
+    write_file_task(x=1, y=1.5)
 
 
 if __name__ == "__main__":
