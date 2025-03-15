@@ -12,24 +12,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from flytekit import task, workflow, ImageSpec
+from flytekit import task, workflow 
 from flytekit.types.file import FlyteFile
 from flytekitplugins.slurm import SlurmFunction
 
 from dataset import get_dataset
 from model import Model
 from trainer import train_epoch, eval_epoch
-
-
-flytekit_hash = "master"
-flytekit = f"git+https://github.com/flyteorg/flytekit.git@{flytekit_hash}"
-slurm_agent = f"git+https://github.com/flyteorg/flytekit.git@{flytekit_hash}#subdirectory=plugins/flytekit-slurm"
-
-image = ImageSpec(
-    packages=[flytekit, slurm_agent, "torch", "torchvision"],
-    apt_packages=["git"],
-    registry="localhost:30000"
-)
 
 
 @task(
@@ -132,7 +121,26 @@ def train(
     return FlyteFile(path=model_path)
 
 
-@task(image=image)
+@task(
+    task_config=SlurmFunction(
+        ssh_config={
+            "host": "aws2",
+            "username": "ubuntu",
+        },
+        sbatch_conf={
+            "partition": "debug",
+            "job-name": "eval-model",
+            "output": "/home/ubuntu/eval.log"
+        },
+        script="""#!/bin/bash -i
+
+. /home/ubuntu/.cache/pypoetry/virtualenvs/demo-4A8TrTN7-py3.12/bin/activate 
+
+echo "Run main evaluation process..."
+{task.fn}
+"""
+    )
+)
 @torch.no_grad()
 def run_infer(data_path: str, model_path: FlyteFile) -> Dict[str, float]:
     # Build validation dataloader
