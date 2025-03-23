@@ -4,16 +4,16 @@ Run the user-defined functions.
 import os
 
 from flytekit import task, workflow
-from flytekitplugins.slurm import SlurmFunction 
+from flytekitplugins.slurm import SlurmFunctionConfig
 
 
 @task(
-    task_config=SlurmFunction(
+    task_config=SlurmFunctionConfig(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",
         },
-        sbatch_conf={
+        sbatch_config={
             "partition": "debug",
             "job-name": "job3",
             "output": "/home/ubuntu/fn_task.log"
@@ -39,7 +39,7 @@ def plus_one(x: int) -> int:
 
 
 @task(
-    task_config=SlurmFunction(
+    task_config=SlurmFunctionConfig(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",

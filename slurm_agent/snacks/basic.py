@@ -4,21 +4,22 @@ Run a pre-existing shell script on the Slurm cluster.
 import os
 
 from flytekit import workflow
-from flytekitplugins.slurm import SlurmRemoteScript, SlurmTask
+from flytekitplugins.slurm import SlurmScriptConfig, SlurmTask
 
 
 slurm_task = SlurmTask(
     name="basic",
-    task_config=SlurmRemoteScript(
+    task_config=SlurmScriptConfig(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",
         },
-        sbatch_conf={
+        sbatch_config={
             "partition": "debug",
             "job-name": "job0",
         },
         batch_script_path="/home/ubuntu/echo.sh",
+        #batch_script_path="/home/ubuntu/fake.sh",
     )
 )
 

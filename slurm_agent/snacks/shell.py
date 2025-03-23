@@ -4,7 +4,7 @@ Run the user-defined script with optional arguments.
 import os
 
 from flytekit import workflow
-from flytekitplugins.slurm import Slurm, SlurmShellTask
+from flytekitplugins.slurm import SlurmConfig, SlurmShellTask
 
 
 shell_task = SlurmShellTask(
@@ -13,12 +13,12 @@ shell_task = SlurmShellTask(
 
 echo [TEST SLURM SHELL TASK 1] Run the user-defined script...
 """,
-    task_config=Slurm(
+    task_config=SlurmConfig(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",
         },
-        sbatch_conf={
+        sbatch_config={
             "partition": "debug",
             "job-name": "job1",
         }
@@ -35,12 +35,12 @@ echo Arg1: $1
 echo Arg2: $2
 echo Arg3: $3
 """,
-    task_config=Slurm(
+    task_config=SlurmConfig(
         ssh_config={
             "host": "aws2",
             "username": "ubuntu",
         },
-        sbatch_conf={
+        sbatch_config={
             "partition": "debug",
             "job-name": "job2",
         },
